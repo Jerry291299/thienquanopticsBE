@@ -567,7 +567,7 @@ app.post("/product/add", async (req: Request, res: Response) => {
     }
 
     // Validate gender field
-    if (!["Male", "Female", "Kids"].includes(gender)) {
+    if (!["Nam", "Nữ"].includes(gender)) {
       return res.status(400).json({ message: "Giới tính không hợp lệ, phải là 'Male', 'Female', hoặc 'Kids'" });
     }
 
@@ -648,17 +648,20 @@ app.get("/products", async (req: Request, res: Response) => {
 
 app.get("/product-test", async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, gender } = req.query;
+    const query = gender ? { gender: { $in: Array.isArray(gender) ? gender : [gender] } } : {};
+
     const options = {
       page: Number(page),
       limit: Number(limit),
       populate: [
         { path: "category" },
         { path: "variants.color", model: "Color" },
+        { path: "brand", model: "Brand" },
       ],
     };
 
-    const products = await Product.paginate({}, options);
+    const products = await Product.paginate(query, options);
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve products", error });

@@ -53,7 +53,7 @@ const ProductSchema: Schema = new Schema(
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Kids"],
+      enum: ["Nam", "Nữ"],
       required: true,
     },
     status: { type: Boolean, required: true },
